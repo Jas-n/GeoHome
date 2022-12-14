@@ -1,0 +1,43 @@
+#!/bin/bash
+EXIT=0
+PROJECT=`php -r "echo dirname(dirname(dirname(realpath('$0'))));"`
+PHP_STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR HEAD | grep -E '\.(php)$')
+ESLINT="./node_modules/.bin/eslint"
+
+echo "Processing Files" > /tmp/pre-commit.log
+for FILE in $PHP_STAGED_FILES
+do
+    php -l -d display_errors=0 $PROJECT/$FILE >> /tmp/pre-commit.log
+    if [ $? != 0 ]
+    then
+        echo "Fix the syntax errors before committing." >> /tmp/pre-commit.log
+        EXIT=1
+    fi
+    FILES="$FILES $PROJECT/$FILE"
+done
+
+
+if [ "$FILES" != "" ]
+then
+    ./vendor/bin/phpcbf -n -p --standard=phpcs.xml $FILES >> /tmp/pre-commit.log
+
+    echo "Running Code Sniffer." >> /tmp/pre-commit.log
+    ./vendor/bin/phpcs -n -p --standard=phpcs.xml $FILES >> /tmp/pre-commit.log
+    if [ $? != 0 ]
+    then
+        EXIT=1
+    fi
+fi
+
+if [ $EXIT == 1 ]
+then
+    echo "" &> /dev/null
+    if code /tmp/pre-commit.log &> /dev/null
+    then
+        echo "" &> /dev/null
+    else
+        cat /tmp/pre-commit.log
+    fi
+fi
+
+exit $EXIT

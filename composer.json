@@ -1,0 +1,33 @@
+{
+    "name": "jas-n/geohome",
+    "type": "project",
+    "description": "GeoHome PHP library",
+    "version": "0.1.0",
+    "keywords": [
+        "geo",
+        "geohome",
+        "smartmeter"
+    ],
+    "license": "MIT",
+    "repositories": [
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "3.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jasn\\GeoHome\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-update-cmd": [
+            "cp contrib/pre-commit .git/hooks/pre-commit",
+            "chmod a+x .git/hooks/pre-commit"
+        ]
+    }
+}
