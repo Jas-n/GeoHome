@@ -1,7 +1,8 @@
 # GeoHome
 
 ## Pre-requisites
-1. Account on...
+1. Wi-Fi module
+2. Account on...
 
 ## Installation
 // Composer Installation
